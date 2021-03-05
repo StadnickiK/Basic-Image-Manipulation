@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+        <script src="script.txt"></script>
+        <script src="layout.txt"></script>
+        <script src="colorCounter.txt"></script>
+        <script src="geometry.txt"></script>
+        <script src="color.txt"></script>
+        <title>Bitmap Manipulator</title>
+        <!-- ............................ jquery ver. 3.3.1 .................. -->
+        <script src="jquery-3.3.1.min.txt"></script>
+        <!-- ............................ bootstrap ver. 3.3.7 ............... -->
+        <link rel="stylesheet" href="bootstrap.min.css" crossorigin="anonymous">
+        <script src="bootstrap.min.txt" crossorigin="anonymous"></script>
+        <!-- ................................................................. -->
+    </head>
+    <body onLoad="updateCanvas();">
+        <div class="navbar navbar-default" role="navigation">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bitmaps<b class="caret"></b></a>
+                    <ul class="dropdown-menu multi-level">
+                        <li><p class="menuItem" onclick="setBitmap( 'img/lena256.png' )">Lena256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/airplane256.png' )">Airplane256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/cicada256.png' )">Cicada256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/mandrill256.png' )">Mandrill256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/monkey256.png' )">Monkey256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/parrots256.png' )">Parrots256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/tire256.png' )">Tire256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/black_rectangles256.png' )">Black_rectangles256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/cross_board256.png' )">Cross_board256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/six_squares256.png' )">Six_squares256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/for_histogram256.png' )">For_histogram256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/grid256.png' )">Grid256</p></li>
+                        <li><p class="menuItem" onclick="setBitmap( 'img/lena_distortions256.png' )">Lena_distortions256</p></li>
+                        <li>
+                            <p class="menuItem">
+                                <label for="myFile">Select file</label>
+                                <input id="myFile" type="file" onchange="onFileSelected(event)" accept=".bmp, .png" style="position: fixed; top: -100em">
+                            </p>>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Layout <b class="caret"></b></a>
+                    <ul class="dropdown-menu multi-level">
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Open</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doOpenPhotos()">Open photos</p></li>
+                                <li><p class="menuItem" onclick="doOpenIndustrial()">Open industrials</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Generate</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doColors()">Colors</p></li>
+                                <li><p class="menuItem" onclick="doNoise()">Noise</p></li>
+                                <li class="dropdown-submenu">
+                                    <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Grid</a>
+                                    <ul class="dropdown-menu">
+                                        <li><p class="menuItem" onclick="doGrid1()">Grid v. 1</p></li>
+                                        <li><p class="menuItem" onclick="doGrid2()">Grid v. 2</p></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Test for Histogram</a>
+                                    <ul class="dropdown-menu">
+                                        <li><p class="menuItem" onclick="doTest4Histogram1()">Version 1</p></li>
+                                        <li><p class="menuItem" onclick="doTest4Histogram2()">Version 2</p></li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown-submenu">
+                                    <a href="#"  class="dropdown-toggle" data-toggle="dropdown">Test</a>
+                                    <ul class="dropdown-menu">
+                                        <li><p class="menuItem" onclick="doTest1()">Test v. 1</p></li>
+                                        <li><p class="menuItem" onclick="doTest2()">Test v. 2</p></li>
+                                        <li><p class="menuItem" onclick="doTest3()">Test v. 3</p></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><p class="menuItem" onclick="doClear()">Clear</p></li>
+                        <li><p class="menuItem" onclick="doMargins()">Margins</p></li>
+                        <li><p class="menuItem" onclick="doClone()">Clone</p></li>
+                        <li class="dropdown-submenu">
+                            <a class="dropdown-toggle menuItem" data-toggle="dropdown">Move</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doMoveO()">Move 0</p></li>
+                                <li><p class="menuItem" onclick="doMoveZ()">Move Z</p></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Geometry<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><p class="menuItem" onclick="doRotationsK90()">Rotations k*90</p></li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rotations Theta</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doRotationsThetaVer1()">Version 1</p></li>
+                                <li><p class="menuItem" onclick="doRotationsThetaVer2()">Version 2</p></li>
+                                <li><p class="menuItem" onclick="doRotationsThetaVer3()">Version 3</p></li>
+                                <li><p class="menuItem" onclick="doRotationsThetaVer4()">Version 4</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reflections</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doReflectionsVer1()">Version 1</p></li>
+                                <li><p class="menuItem" onclick="doReflectionsVer2()">Version 2</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Pixel shift</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doPixelShiftVer1()">Version 1</p></li>
+                                <li><p class="menuItem" onclick="doPixelShiftVer2()">Version 2</p></li>
+                                <li><p class="menuItem" onclick="doPixelShiftVer3()">Version 3</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bitmap magnification</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doBitmapMagnificationVer1()">Version 1</p></li>
+                                <li><p class="menuItem" onclick="doBitmapMagnificationVer2()">Version 2</p></li>
+                                <li><p class="menuItem" onclick="doBitmapMagnificationVer3()">Version 3</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bitmap reduction</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doBitmapReductionVer1()">Version 1</p></li>
+                                <li><p class="menuItem" onclick="doBitmapReductionVer2()">Version 2</p></li>
+                                <li><p class="menuItem" onclick="doBitmapReductionVer3()">Version 3</p></li>
+                            </ul>
+                        </li>
+                        <li><p class="menuItem" onclick="doRandomDistribution()">Random distribution</p></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Color<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Channels</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doChannelsColor()">Color channels</p></li>
+                                <li><p class="menuItem" onclick="doChannelsGray()">Gray channels</p></li>
+                                <li><p class="menuItem" onclick="doTwoChannels()">Two channels</p></li>
+                                <li><p class="menuItem" onclick="doChannelsCombinations()">Channels combinations</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Gray/Binary</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doGray()">Gray version</p></li>
+                                <li><p class="menuItem" onclick="doBinary()">Binary version</p></li>
+                            </ul>
+                        </li>
+                        <li><p class="menuItem" onclick="doQuantization()">Quantization</p></li>
+                        <li class="dropdown-submenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dark/Bright</a>
+                            <ul class="dropdown-menu">
+                                <li><p class="menuItem" onclick="doBrighter()">Brighter</p></li>
+                                <li><p class="menuItem" onclick="doDarker()">Darker</p></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Colors Inversion</a>
+                                <ul class="dropdown-menu">
+                                        <li><p class="menuItem" onclick="doColorInversion()">Color Inversion(Negative)</p></li>
+                                        <li><p class="menuItem" onclick="doSingleColorInversion()">Single Color Inversion</p></li>
+                                        <li><p class="menuItem" onclick="doColorPairsInversion()">Color pairs Inversion</p></li>
+                                </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sepia</a>
+                                <ul class="dropdown-menu">
+                                        <li><p class="menuItem" onclick="doSepia()">Simple Sepia</p></li>
+                                        <li><p class="menuItem" onclick="doSimpleSepia()">Sepia</p></li>
+                                        <li><p class="menuItem" onclick="doSepiaColors()">Sepia by color</p></li>
+                                </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<div id="container">
+    <div class="canvasRow" >
+            <canvas id="myCanvas1" class="canvas" width="256" height="256"></canvas>
+            <canvas id="myCanvas2" class="canvas" width="256" height="256"></canvas>
+            <canvas id="myCanvas3" class="canvas" width="256" height="256"></canvas>
+    </div>
+    <div class="canvasRow">
+            <canvas id="myCanvas4" class="canvas" width="256" height="256"></canvas>
+            <canvas id="myCanvas5" class="canvas" width="256" height="256"></canvas>
+            <canvas id="myCanvas6" class="canvas" width="256" height="256"></canvas>
+    </div>
+    <div class="canvasRow">
+        <canvas id="myCanvas7" class="canvasR" width="700" height="25"></canvas>
+        <canvas id="myCanvas8" class="canvasR" width="80" height="25"></canvas>
+    </div>
+</div>
+<div id="container">
+    <h1>Colors manipulation</h1>
+    <input type="checkbox" id="chk"> Use value from slider for every pixel<br>
+    Red: <input type="range" id="r1" min="0" max="254" value="0" onchange='UpdateCurrentCanvas("r1", 0)'>
+    Green:<input type="range" id="r2" min="0" max="254" value="0" onchange='UpdateCurrentCanvas("r2", 1)'>
+    Blue: <input type="range" id="r3" min="0" max="254" value="0" onchange='UpdateCurrentCanvas("r3", 2)'>
+    Transparency: <input type="range" id="r4" min="0" max="100" value="100" onchange='UpdateCurrentCanvas("r4", 3)'>
+</div>
+</body>
+</html>

@@ -1,0 +1,843 @@
+function doRotationsK90( ) {
+    doClear( );
+    var myImageDataIN = myContext1.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContext1.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( 255 - y, x )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * xe + 255 - ye; 
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContext2.putImageData( myImageDataOUT, 0, 0 );
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) <- ( y, 255 - x )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var j = ( myWidth * ( 255 - xe ) + ye ) * 4;
+        var start = myWidth * ye + xe; 
+        myDataOUT[ start * 4 ] = myDataIN[ j ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ j + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ j + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ j + 3 ];
+    }
+    myContext3.putImageData( myImageDataOUT, 0, 0 );
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) <- ( 255- x, 255 - y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var j = ( myWidth * ( 255 - ye ) + 255 - xe ) * 4;
+        var start = myWidth * ye + xe; 
+        myDataOUT[ start * 4 ] = myDataIN[ j ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ j + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ j + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ j + 3 ];
+    }
+    myContext4.putImageData( myImageDataOUT, 0, 0 );
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( y, 255 - x )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * (255 - xe ) + ye; 
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContext5.putImageData( myImageDataOUT, 0, 0 );
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) <- ( 255 - y, x )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var j = ( myWidth * xe + 255 - ye ) * 4;
+        var start = myWidth * ye + xe; 
+        myDataOUT[ start * 4 ] = myDataIN[ j ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ j + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ j + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ j + 3 ];
+    }
+    myContext6.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+function doRotationsThetaVer1( ) {
+    doClear( );
+    rotationsThetaVer1( myCanvas1, myCanvas2, 15 );
+    rotationsThetaVer1( myCanvas1, myCanvas3, 30 );
+    rotationsThetaVer1( myCanvas1, myCanvas4, 45 );
+    rotationsThetaVer1( myCanvas1, myCanvas5, 60 );
+    rotationsThetaVer1( myCanvas1, myCanvas6, 75 );
+}
+//----------------------------------------------------------------------------
+
+function doRotationsThetaVer2( ) {
+    doClear( );
+    rotationsThetaVer1( myCanvas1, myCanvas2, 15 );
+    rotationsThetaVer1( myCanvas2, myCanvas3, 15 );
+    rotationsThetaVer1( myCanvas3, myCanvas4, 15 );
+    rotationsThetaVer1( myCanvas4, myCanvas5, 15 );
+    rotationsThetaVer1( myCanvas5, myCanvas6, 15 );
+}
+
+function rotationsThetaVer1( myCanvasIN, myCanvasOUT, Theta, xs = myCanvasIN.width / 2, ys = myCanvasIN.height / 2 ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight);
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var x1, y1, w = myWidth, h = myHeight;
+    var cost = Math.cos( -Theta * Math.PI / 180.0 );
+    var sint = Math.sin( -Theta * Math.PI / 180.0 );
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { 
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        x1 = xs + Math.floor( ( xe - xs ) * cost - ( ye - ys ) * sint + 0.5 );
+        y1 = ys + Math.floor( ( xe - xs ) * sint + ( ye - ys ) * cost + 0.5 );
+        if ( (x1 >= 0 ) && ( x1 < w ) && ( y1 >= 0 ) && ( y1 < h ) ) {
+            var j = ( myWidth * y1 + x1 ) * 4;
+            myDataOUT[ i ] = myDataIN[ j ];
+            myDataOUT[ i + 1 ] = myDataIN[ j + 1 ];
+            myDataOUT[ i + 2 ] = myDataIN[ j + 2 ];
+            myDataOUT[ i + 3 ] = myDataIN[ j + 3 ];
+        } else {
+            myDataOUT[ i ] = 0xCC;
+            myDataOUT[ i + 1 ] = 0xCC;
+            myDataOUT[ i + 2 ] = 0xCC;
+            myDataOUT[ i + 3 ] = 255;
+        }
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function doRotationsThetaVer3( ) {
+    doClear( );
+    rotationsThetaVer2( myCanvas1, myCanvas2, 15 );
+    rotationsThetaVer2( myCanvas1, myCanvas3, 30 );
+    rotationsThetaVer2( myCanvas1, myCanvas4, 45 );
+    rotationsThetaVer2( myCanvas1, myCanvas5, 60 );
+    rotationsThetaVer2( myCanvas1, myCanvas6, 75 );
+}
+//----------------------------------------------------------------------------
+
+function rotationsThetaVer2( myCanvasIN, myCanvasOUT, Theta ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var x1, y1, w = myWidth, h = myHeight, xs = w / 2, ys = h / 2;
+    var cost = Math.cos( Theta * Math.PI / 180.0 );
+    var sint = Math.sin( Theta * Math.PI / 180.0 );
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { 
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        x1 = xs + Math.floor( ( xe - xs ) * cost - ( ye - ys ) * sint + 0.5 );
+        y1 = ys + Math.floor( ( xe - xs ) * sint + ( ye - ys ) * cost + 0.5 );
+        var j = ( myWidth * y1 + x1 ) * 4;
+        myDataOUT[ j ] = myDataIN[ i ];
+        myDataOUT[ j + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ j + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ j + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function doRotationsThetaVer4( ) {
+    doClear( );
+    rotationsThetaVer1( myCanvas1, myCanvas2, 15, 0, 0 );
+    rotationsThetaVer1( myCanvas1, myCanvas3, 15, 255, 0 );
+    rotationsThetaVer1( myCanvas1, myCanvas4, 15, 128, 128 );
+    rotationsThetaVer1( myCanvas1, myCanvas5, 15, 0, 255 );
+    rotationsThetaVer1( myCanvas1, myCanvas6, 15, 255, 255 );
+}
+//----------------------------------------------------------------------------
+
+function doReflectionsVer1( ) {
+    doClear( );
+    reflectionVertical( myCanvas1, myCanvas2 );
+    reflectionVerticalHorizontal( myCanvas1, myCanvas3 );
+    reflectionHorizontal( myCanvas1, myCanvas4 );
+    reflectionDiagonal1( myCanvas1, myCanvas5 );
+    reflectionDiagonal2( myCanvas1, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function reflectionVertical( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( 255 - x, y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * ye + 255 - xe; 
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function reflectionHorizontal( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( x, 255 - y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * ( 255 - ye ) + xe; 
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function reflectionVerticalHorizontal( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( 255 - x, 255 - y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * ( 255 - ye ) + 255 - xe; 
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function reflectionDiagonal1( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( 255 - y, 255 - x )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * ( 255 - xe ) + 255 - ye; 
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function reflectionDiagonal2( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( 255 - x, 255 - y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * xe + ye;
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function doReflectionsVer2( ) {
+    doClear( );
+    reflectionVertical( myCanvas1, myCanvas2 );
+    reflectionVertical( myCanvas2, myCanvas3 );
+    reflectionHorizontal( myCanvas1, myCanvas4 );
+    reflectionVertical( myCanvas4, myCanvas5 );
+    reflectionVertical( myCanvas5, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+function doPixelShiftVer1( ) {
+    doClear( );
+    shiftXY( myCanvas1, myCanvas2 );
+    shiftY( myCanvas1, myCanvas3 );
+    shiftX( myCanvas1, myCanvas4 );
+    shiftXX( myCanvas1, myCanvas5 );
+    shiftY( myCanvas1, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function shiftXX( myCanvasIN, myCanvasOUT, deltaX = myCanvasIN.width / 2 ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( x + deltaX ) % 256, y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var start = myWidth * ye + ( xe + deltaX ) % myWidth;
+        myDataOUT[ start * 4 ] = myDataIN[ i ];
+        myDataOUT[ start * 4 + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ start * 4 + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ start * 4 + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function shiftX( myCanvasIN, myCanvasOUT, deltaX = myCanvasIN.width / 2 ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( x + deltaX ) % 256, y )
+        var xe = ( Math.floor( i / 4 ) % myWidth + deltaX ) % myWidth;
+        var ye = Math.floor( Math.floor( i / 4 ) / myWidth );
+        var j = ( myWidth * ye + xe ) * 4;
+        myDataOUT[ j ] = myDataIN[ i ];
+        myDataOUT[ j + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ j + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ j + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function shiftY( myCanvasIN, myCanvasOUT, deltaY = myCanvasIN.height / 2 ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( x + deltaX ) % 256, y )
+        var xe = Math.floor( i / 4 ) % myWidth;
+        var ye = ( Math.floor( Math.floor( i / 4 ) / myWidth ) + deltaY ) % myWidth;
+        var j = ( myWidth * ye + xe ) * 4;
+        myDataOUT[ j ] = myDataIN[ i ];
+        myDataOUT[ j + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ j + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ j + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function shiftXY( myCanvasIN, myCanvasOUT, deltaX = myCanvasIN.width / 2, deltaY = myCanvasIN.height / 2 ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    
+    for ( var i = 0; i < myDataIN.length; i += 4 ) { // ( x, y ) -> ( x + deltaX ) % 256, y )
+        var xe = ( Math.floor( i / 4 ) % myWidth + deltaX ) % myWidth;
+        var ye = ( Math.floor( Math.floor( i / 4 ) / myWidth ) + deltaY ) % myWidth;
+        var j = ( myWidth * ye + xe ) * 4;
+        myDataOUT[ j ] = myDataIN[ i ];
+        myDataOUT[ j + 1 ] = myDataIN[ i + 1 ];
+        myDataOUT[ j + 2 ] = myDataIN[ i + 2 ];
+        myDataOUT[ j + 3 ] = myDataIN[ i + 3 ];
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function doPixelShiftVer2( ) {
+    doClear( );
+    var deltaX = Math.floor( Math.random() * myCanvas1.width), deltaY = Math.floor( Math.random() * myCanvas1.height );
+    shiftXY( myCanvas1, myCanvas2, deltaX, deltaY );
+    shiftY( myCanvas1, myCanvas3, deltaX, deltaY );
+    shiftX( myCanvas1, myCanvas4, deltaX, deltaY );
+    shiftXX( myCanvas1, myCanvas5, deltaX, deltaY );
+    shiftY( myCanvas1, myCanvas6, deltaX, deltaY );
+}
+//----------------------------------------------------------------------------
+
+function doPixelShiftVer3( ) {
+    doClear( );
+    var deltaX = Math.floor( Math.random() * myCanvas1.width), deltaY = Math.floor( Math.random() * myCanvas1.height );
+    shiftXY( myCanvas1, myCanvas2, deltaX, deltaY );
+    shiftXY( myCanvas1, myCanvas3, deltaX, deltaY );
+    shiftXY( myCanvas1, myCanvas4, deltaX, deltaY );
+    shiftXY( myCanvas1, myCanvas5, deltaX, deltaY );
+    shiftXY( myCanvas1, myCanvas6, deltaX, deltaY );
+}
+//----------------------------------------------------------------------------
+
+function doBitmapMagnificationVer1( ) {
+    doClear( );
+    bitmapMagnificationFirstQuarter( myCanvas1, myCanvas2 );
+    bitmapMagnificationFirstQuarter( myCanvas2, myCanvas3 );
+    bitmapMagnificationFirstQuarter( myCanvas3, myCanvas4 );
+    bitmapMagnificationFirstQuarter( myCanvas4, myCanvas5 );
+    bitmapMagnificationFirstQuarter( myCanvas5, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function doBitmapMagnificationVer2( ) {
+    doClear( );
+    bitmapMagnificationFirstQuarter( myCanvas1, myCanvas2 );
+    bitmapMagnificationSecondQuarter( myCanvas1, myCanvas3 );
+    bitmapMagnificationImageCenter( myCanvas1, myCanvas4 );
+    bitmapMagnificationThirdQuarter( myCanvas1, myCanvas5 );
+    bitmapMagnificationFourthQuarter( myCanvas1, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function doBitmapMagnificationVer3( ) {
+    doClear( );
+    bitmapMagnificationImageCenter( myCanvas1, myCanvas2 );
+    bitmapMagnificationImageCenter( myCanvas2, myCanvas3 );
+    bitmapMagnificationImageCenter( myCanvas3, myCanvas4 );
+    bitmapMagnificationImageCenter( myCanvas4, myCanvas5 );
+    bitmapMagnificationImageCenter( myCanvas5, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapMagnificationFirstQuarter( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    for( var ye = 0; ye < myHeight / 2; ye++ ) {
+        for( var xe = 0; xe < myWidth / 2; xe++ ) {
+            var start = myWidth * ye + xe;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * 2 * ye + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * 2 * ye + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapMagnificationSecondQuarter( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    for( var ye = 0; ye < myHeight / 2; ye++ ) {
+        for( var xe = 0; xe < myWidth / 2; xe++ ) {
+            var start = myWidth * ye + xe + myWidth / 2;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * 2 * ye + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * 2 * ye + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapMagnificationThirdQuarter( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    for( var ye = 0; ye < myHeight / 2; ye++ ) {
+        for( var xe = 0; xe < myWidth / 2; xe++ ) {
+            var start = myWidth * ( ye + myHeight / 2 ) + xe;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * 2 * ye + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * 2 * ye + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapMagnificationFourthQuarter( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    for( var ye = 0; ye < myHeight / 2; ye++ ) {
+        for( var xe = 0; xe < myWidth / 2; xe++ ) {
+            var start = myWidth * ( ye + myHeight / 2 ) + xe + myWidth / 2;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * 2 * ye + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * 2 * ye + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapMagnificationImageCenter( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    for( var ye = 0; ye < myHeight / 2; ye++ ) {
+        for( var xe = 0; xe < myWidth / 2; xe++ ) {
+            var start = myWidth * ( ye + myHeight / 4 ) + xe + myWidth / 4;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * 2 * ye + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * 2 * ye + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( 2 * ye + 1 ) + 2 * xe + 1 ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function doBitmapReductionVer1( ) {
+    doClear( );
+    bitmapReductionEvenEven( myCanvas1, myCanvas2 );
+    bitmapReductionEvenEven( myCanvas2, myCanvas3 );
+    bitmapReductionEvenEven( myCanvas3, myCanvas4 );
+    bitmapReductionEvenEven( myCanvas4, myCanvas5 );
+    bitmapReductionEvenEven( myCanvas5, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function doBitmapReductionVer2( ) {
+    doClear( );
+    bitmapReductionEvenEven( myCanvas1, myCanvas2 );
+    bitmapReductionOddEven( myCanvas1, myCanvas3 );
+    bitmapReductionAllPixels( myCanvas1, myCanvas4 );
+    bitmapReductionEvenOdd( myCanvas1, myCanvas5 );
+    bitmapReductionOddOdd( myCanvas1, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function doBitmapReductionVer3( ) {
+    doClear( );
+    bitmapReductionAllPixels( myCanvas1, myCanvas2 );
+    bitmapReductionAllPixels( myCanvas2, myCanvas3 );
+    bitmapReductionAllPixels( myCanvas3, myCanvas4 );
+    bitmapReductionAllPixels( myCanvas4, myCanvas5 );
+    bitmapReductionAllPixels( myCanvas5, myCanvas6 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapReductionEvenEven( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var w = myWidth / 2;
+    var h = myHeight / 2;
+    for( var ye = 0; ye < h; ye++ ) {
+        for( var xe = 0; xe < w; xe++ ) {
+            var start = myWidth * 2 * ye + 2 * xe;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * ye + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ye + xe + h ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe + w ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapReductionOddEven( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var w = myWidth / 2;
+    var h = myHeight / 2;
+    for( var ye = 0; ye < h; ye++ ) {
+        for( var xe = 0; xe < w; xe++ ) {
+            var start = myWidth * 2 * ye + 2 * xe + 1;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * ye + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ye + xe + h ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe + w ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapReductionEvenOdd( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var w = myWidth / 2;
+    var h = myHeight / 2;
+    for( var ye = 0; ye < h; ye++ ) {
+        for( var xe = 0; xe < w; xe++ ) {
+            var start = myWidth * ( 2 * ye + 1 ) + 2 * xe;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * ye + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ye + xe + h ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe + w ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapReductionOddOdd( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var w = myWidth / 2;
+    var h = myHeight / 2;
+    for( var ye = 0; ye < h; ye++ ) {
+        for( var xe = 0; xe < w; xe++ ) {
+            var start = myWidth * ( 2 * ye + 1 ) + 2 * xe + 1;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * ye + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ye + xe + h ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            j = ( myWidth * ( ye + h ) + xe + w ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapReductionAllPixels( myCanvasIN, myCanvasOUT ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+    var w = myWidth / 2;
+    var h = myHeight / 2;
+    for( var ye = 0; ye < h; ye++ ) {
+        for( var xe = 0; xe < w; xe++ ) {
+            var start = myWidth * 2 * ye + 2 * xe;
+            var   red = myDataIN[ start * 4 ];
+            var green = myDataIN[ start * 4 + 1 ];
+            var  blue = myDataIN[ start * 4 + 2 ];
+            var alpha = myDataIN[ start * 4 + 3 ];
+            var j = ( myWidth * ye + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            start = myWidth * 2 * ye + 2 * xe + 1;
+              red = myDataIN[ start * 4 ];
+            green = myDataIN[ start * 4 + 1 ];
+             blue = myDataIN[ start * 4 + 2 ];
+            alpha = myDataIN[ start * 4 + 3 ];
+            j= ( myWidth * ye + xe + h ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            start = myWidth * ( 2 * ye + 1 ) + 2 * xe;
+              red = myDataIN[ start * 4 ];
+            green = myDataIN[ start * 4 + 1 ];
+             blue = myDataIN[ start * 4 + 2 ];
+            alpha = myDataIN[ start * 4 + 3 ];
+            j = ( myWidth * ( ye + h ) + xe ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+            start = myWidth * ( 2 * ye + 1 ) + 2 * xe + 1;
+              red = myDataIN[ start * 4 ];
+            green = myDataIN[ start * 4 + 1 ];
+             blue = myDataIN[ start * 4 + 2 ];
+            alpha = myDataIN[ start * 4 + 3 ];
+            j = ( myWidth * ( ye + h ) + xe + w ) * 4;
+            myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+        }
+    }    
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
+
+function doRandomDistribution( ) {
+    doClear( );
+    bitmapRandomDistribution( myCanvas1, myCanvas2, 2 );
+    bitmapRandomDistribution( myCanvas1, myCanvas3, 4 );
+    bitmapRandomDistribution( myCanvas1, myCanvas4, 8 );
+    bitmapRandomDistribution( myCanvas1, myCanvas5, 16 );
+    bitmapRandomDistribution( myCanvas1, myCanvas6, 32 );
+}
+//----------------------------------------------------------------------------
+
+function bitmapRandomDistribution( myCanvasIN, myCanvasOUT, parameter ) {
+    var myContextIN = myCanvasIN.getContext( '2d' );
+    var myContextOUT = myCanvasOUT.getContext( '2d' );
+    var myImageDataIN = myContextIN.getImageData( 0, 0, myWidth, myHeight );
+    var myImageDataOUT = myContextOUT.getImageData( 0, 0, myWidth, myHeight );
+    var myDataIN = myImageDataIN.data;
+    var myDataOUT = myImageDataOUT.data;
+
+    var side = myWidth / parameter;
+    var howMany = parameter * parameter;
+    var myTable = [], myControlTable = [];
+ 
+    for ( var i = 0; i < howMany; i++ ) {
+       myTable[ i ] = -1;
+       myControlTable[ i ] = 0;
+    }
+    for ( i = 0; i < howMany; i++ ) {
+       var guess = Math.floor( Math.random( ) * howMany );
+       while ( myControlTable[ guess ] > 0 ) guess = Math.floor( Math.random( ) * howMany );
+       myTable[ i ] = guess;
+       myControlTable[ guess ] = 1;
+    } 
+    if( parameter < 16 ) console.log( myTable );
+    for( var rS = 0; rS < parameter; rS++ ) {
+        for( var cS = 0; cS < parameter; cS++ ) {
+            var segmentS = rS * parameter + cS;
+            var segmentD = myTable[ segmentS ];
+            var rD = Math.floor( segmentD / parameter );
+            var cD = segmentD % parameter;
+            for ( var ye = 0; ye < side; ye++ ) {
+                for ( var xe = 0; xe < side; xe++ ) {
+                    var start = myWidth * ( rS * side + ye ) + cS * side + xe;
+                    var   red = myDataIN[ start * 4 ];
+                    var green = myDataIN[ start * 4 + 1 ];
+                    var  blue = myDataIN[ start * 4 + 2 ];
+                    var alpha = myDataIN[ start * 4 + 3 ];
+                    var j = ( myWidth * ( rD * side + ye ) + cD * side + xe ) * 4;
+                    myDataOUT[ j ] = red; myDataOUT[ j + 1 ] = green; myDataOUT[ j + 2 ] = blue; myDataOUT[ j + 3 ] = alpha;
+                }
+            }
+        }
+    }
+    myContextOUT.putImageData( myImageDataOUT, 0, 0 );
+}
+//----------------------------------------------------------------------------
